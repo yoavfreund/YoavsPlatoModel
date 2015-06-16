@@ -1,0 +1,20 @@
+\section{Use Cases}
+\label{sec:usecases}
+
+By abstracting out the raw measurements through models, \projName\ enables several scenarios involving storing and processing of spatiotemporal sensor data. In particular, it facilitates among others the following use cases:\\
+
+{\bf Decision support for spatiotemporal data.} Conventional database management systems and OLAP \cite{olap} have provided businesses with decision support by allowing them to quickly analyze the data through a combination of declarative querying and OLAP operations, such as rollup, drill-down, slice-and-dice, etc. However, their focus has always been on traditional alphanumeric data without any inherent uncertainty. \projName\ on the other hand, aims to extend decision support to datasets containing spatiotemporal sensor data that are by definition inaccurate and probabilistic. We next illustrate how \projName\ can support different types of OLAP operations.
+
+\begin{example}
+Drill-down into buildings/rooms/sensors
+\end{example}
+
+{\bf Compressing sensor data.} The proliferation of sensors embedded in devices, from automobiles and buildings to smartphones and wearable devices, such as fitness trackers, has led to an ever increasing amount of sensor data. The sheer size of such data streams makes it a challenge to not only process these data but to even transfer them over the network and store them. By using the raw measurements to learn models about the data, which capture the essence of the data that is useful for subsequent processing, \projName\ enables compression of spatiotemporal streams. The compressed model representation could be used not only inside \projName\ to store the data in a more space-efficient format and facilitate fast query processing but also outside the system to reduce the cost of communicating the data over the network. We next demonstrate how the models inferred by \projName\ could be used to lower the communication cost of transferring sensor data from a smartphone to the server storing the data for subsequent analysis.
+
+\begin{example}
+Communicating outliers
+\end{example}
+
+{\bf Cleaning sensor data.}
+
+{\bf Acquiring insight into the data.}

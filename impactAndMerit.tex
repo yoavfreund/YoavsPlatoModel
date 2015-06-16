@@ -1,0 +1,29 @@
+\section{Broad Impact}
+\label{sec:broad-impact}
+Sensor data of diverse types and large volumes will soon need to be combined with databases and lead to a new generation of analytics. We argue that this new generation of analytics must be based on the same healthy database technology cornerstones that the prior business intelligence and On Line Analytical Processing software (OLAP) was based: Declarative queries, automatic optimization, efficient storage representations and multiple layers of abstraction can lead to high productivity, which is currently absent from sensor data analytics. At the same time, this new generation must build upon the wealth of knowledge in statistical signal processing. 
+
+Upon completion, Plato will deliver the envisioned productivity gains and will lower the technical sophistication bar needed for acting in the space, therefore opening the gates to many scientists. We already see that Plato can have a large impact on the projects that it was inspired from (smart buildings and population health studies) and we expect equally large impact in more areas.
+
+\section{Intellectual Merit}
+\label{sec:merit}
+The delivery of Plato requires innovative solutions to the following problems:
+%
+\begin{enumerate}
+%
+\item Design and implementation of a model-aware data model (where models are continuous functions) and respective query language features that allow seamless combination of conventional SQL querying with statistical signal processing. Notice that the design must be aware of the stochastic nature of the models. In particular, the query language must allow expression of the required accuracy/confidence of the query results (see Sections \ref{sec:models} and \ref{sec:architecture}).
+%
+\item Design and implementation of learning algorithms that learn the model components of reduced-noise, additive model representations. In particular, we will adapt the wavelet, SVD and ARMA transforms to their reduced-noise and additive versions. Consequently, the automated query processing algorithms should try to (a) operate directly on the compressed model representations%
+\footnote{
+For example, consider two models represented by their Fourier transform and a query that asks for their correlation. It is most efficient to compute directly on the frequency domain rather than bringing back to time domain.
+} - as opposed to decoding the model into multidimensional arrays of samples and (b) utilize the fewest number of bits from the additive model representation. Indeed, they should use the minimum number of bits that ensures the query required confidence. In this way, the queries can be most efficient. This goal will lead to a new generation of top-k algorithms, where the goal is to minimize the amount read by the additive model representation (see Sections \ref{sec:lossless}-\ref{sec:reduced-noise} and \ref{sec:query-processing}).
+%
+\item Design and implementation of semiautomated algorithms that further compress the model representations by considering the dependencies (mutual entropy) between the models. The process should be iterative, in the sense that the model administrator provides ideas on dependencies between various models and Plato figures out the effectiveness of these ideas on compression and noise reduction (see Section \ref{sec:dependencies}).
+%
+\item Design and implementation of algorithms for the efficient incremental maintenance of the additive representations (i.e., algorithms that update them as additional data emerge). These algorithms will have to trade off between the speed of convergence to an accurate revised model and the amount of computation needed in order to do so (see Section \ref{sec:ivm}).
+%  
+\item Provide a theory and tools that examine the question of what is the right schema and models for a models-aware database. In a sense, this question expands classical database design into the models space (see Section \ref{sec:design}).
+%
+\item Exercise and experiment with Plato on large scale statistical sensor data processing cases, such as the ones presented by the Energy Dashboard and the DELPHI project. The experimentation will measure the time to develop analyses as well as the runtime efficiency of the analyses (see Section \ref{sec:use-cases}).
+%
+\end{enumerate}
+

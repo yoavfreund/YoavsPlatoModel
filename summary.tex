@@ -1,0 +1,159 @@
+\documentclass{article}
+
+\usepackage{fullpage}
+
+\usepackage{color}
+
+\usepackage{amsmath}
+
+\usepackage{textcomp}
+\usepackage{ifthen}
+\usepackage{listings}
+\usepackage{fancyvrb}
+\usepackage{verbatim}
+%\usepackage[noend]{algorithm2e}
+
+%\usepackage[pdftex]{graphicx}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{calc}
+\usepackage{float}
+
+\usepackage{url}
+
+% For generating custom lists (similar to table of contents, list of figures
+% etc.)
+\usepackage[subfigure]{tocloft}
+
+\usepackage{hyperref}
+\usepackage[all]{hypcap}
+\usepackage{latexsym}
+
+\usepackage{enumitem}
+
+% Remove spacing around section headings
+\usepackage[compact]{titlesec}
+\titlespacing{\section}{0pt}{*0}{*0}
+\titlespacing{\subsection}{0pt}{*0}{*0}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+
+%\usepackage[left=1.05in,right=1.05in,top=1in,bottom=1in]{geometry}
+
+% tweak or comment out the baselinestretch to control how much space for hand-writing comments you get between the lines
+%\renewcommand{\baselinestretch}{1.8}
+
+%\newcommand{\reminder}[1]{}
+\newcommand{\reminder}[1]{ [[[ \marginpar{\mbox{$<==$}} #1 ]]] }
+\newcommand{\yoav}[1]{\reminder{#1}}
+%\newcommand{\reminder}[1]{
+%    \par
+%    \colorbox[rgb]{0.8,0.8,0.8}{
+%        \parbox{\linewidth}{
+%            #1
+%        }}}
+%\renewcommand{\reminder}[1]{}
+
+\newcommand{\eat}[1]{}
+
+\newtheorem{defin}{Definition}[section]
+\newtheorem{ex}{EXAMPLE}[section]
+%\newtheorem{lemm}{Lemma}[section]
+%\newtheorem{thm}{Theorem}[section]
+\newenvironment{example}{\begin{ex} \nopagebreak
+  \begin{rm}}{\end{rm} $\Box$ \end{ex}}
+%\newenvironment{definition}[1]{\begin{defin}\begin{rm}({\bf
+%    #1})}{{\hfill$\Box$}\end{rm}\end{defin}}
+%\newenvironment{lemma}{\begin{lemm}}{{\hfill$\Box$}\end{lemm}}
+%\newenvironment{theorem}{\begin{thm} \nopagebreak}{{\hfill$\Box$}\end{thm}}
+
+
+% Commands for writing syntax
+\newcommand{\gn}[1]{{\bf #1}}       % (N)on-terminal
+\newcommand{\gt}[1]{{\tt #1}}       % (T)erminal
+\newcommand{\gs}[1]{{\it #1}}       % (S)pecial construct
+
+% Verbatim environment for SQL snippets
+\DefineVerbatimEnvironment% 
+{sql}{Verbatim}{frame=single,numbers=left,fontsize=\scriptsize}
+
+% HACK: Bypass ACM's definition of paragraph as a subsubsection
+\renewcommand{\paragraph}[1]{{\noindent {\bf #1}}}
+
+% Compress whitespace around itemize and enumerate
+\setitemize{topsep=.0em,parsep=0pt,partopsep=0pt,labelsep=0.2em,itemsep=0pt,leftmargin=0.5em}
+\setenumerate{topsep=.0em,parsep=0pt,partopsep=0pt,labelsep=0.2em,itemsep=0pt,leftmargin=0.5em}
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+
+% Remove paragraph spacing
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+\setlength{\headsep}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\topmargin}{0pt}
+\setlength{\topsep}{0pt}
+\setlength{\partopsep}{0pt}
+
+% Decrease the line spread slightly
+% \linespread{0.98}
+
+% Define our own compact enumerate
+%\newenvironment{compact_enum}
+%{\setlength{\leftmargini}{1em}
+%\begin{enumerate}
+%  \setlength{\labelsep}{.3em} 
+%  \setlength{\itemsep}{.4em}
+%  \setlength{\parskip}{0pt}
+%  \setlength{\parsep}{0pt}}
+%{\end{enumerate}}
+
+% Define our own compact itemize
+%\newenvironment{compact_item}
+%{\setlength{\leftmargini}{1em}
+%\begin{itemize}
+%  \setlength{\labelsep}{.3em} 
+%  \setlength{\itemsep}{.4em}
+%  \setlength{\parskip}{0pt}
+%  \setlength{\parsep}{0pt}}
+%{\end{itemize}}
+
+%\addtolength{\topmargin}{-8mm}
+%\addtolength{\topskip}{-1mm}
+
+\DefineVerbatimEnvironment%
+{tree}{Verbatim}{frame=single,fontsize=\scriptsize}
+
+\DefineVerbatimEnvironment%
+{treeNumber}{Verbatim}{frame=single,numbers=left,fontsize=\scriptsize}
+\title{Data-driven workflow application frameworks for mobile}
+
+\renewcommand{\rmdefault}{phv} % Arial
+\renewcommand{\sfdefault}{phv} % Arial
+
+\begin{document}
+\paragraph{Summary} SQL database systems provide {\em declarative querying} (via SQL), {\em automatic query optimization} and {\em physical-logical independence}, which lead to increased developer and analyst productivity. However, SQL systems fail in the space of predictive analytics that involve sensors generating measurements in the space and time dimensions. This project argues that at the core of the failure of SQL databases in the management and analytics of sensor spatiotemporal data is the lack of a critical abstraction, which is the {\em real world models}, which capture the stochastic processes that generate the measurements. The signal processing area has deeply built in its foundations the real world model concept, which leads to great results in the data quality, compression and reconstruction of signals. It is apparent that databases and signal processing techniques should be coupled but, unfortunately, currently they do not mix well. The result is reduced productivity, very high requirements on the analysts (must be simultaneously experts in signal processing, statistics and big data management) and projects that cannot easily incorporate (a) many types of sensor data, (b) combinations of sensor data with conventional database data that provide context and (c) many types of analysis.
+
+The proposed Plato database system brings the real world model concept into SQL databases, therefore combining the healthy productivity aspects of SQL systems (declarative queries, multiple levels of abstraction, automated optimization) with the sensor data processing benefits of signal processing techniques. Plato uses models (spatiotemporal continuous functions) as first class citizens. The proposed reduced-noise, additive representations of the Plato models can confer both a data quality benefit and a huge efficiency benefit, by virtue of providing very compressed representations of the model. Query processing algorithms can run directly on these compressed representations and utilize just enough data in order to meet the query's requirements on result confidence.
+
+\paragraph{Broad Impact} Sensor data of diverse types and large volumes will soon need to be combined with databases and lead to a new generation of analytics. We argue that this new generation of analytics must be based on the same healthy database technology cornerstones that the prior business intelligence and On Line Analytical Processing software (OLAP) was based: Declarative queries, automatic optimization, efficient storage representations and multiple layers of abstraction can lead to high productivity, which is currently absent from sensor data analytics. At the same time, this new generation must build upon the wealth of knowledge in statistical signal processing. Upon completion, Plato will deliver the envisioned productivity gains and will lower the technical sophistication bar needed for acting in the space, therefore opening the gates to many scientists. We already see that Plato can have a large impact on the projects that it was inspired from (smart buildings and population health studies) and we expect equally large impact in more areas.
+
+\paragraph{Intellectual Merit}
+The delivery of Plato requires innovative solutions to multiple problems:
+%
+\begin{enumerate}
+%
+\item Design and implementation of a model-aware data model  and respective query language features that allow seamless combination of conventional SQL querying with statistical signal processing. Notice that the design must be aware of the stochastic nature of the models. 
+%
+\item Design and implementation of learning algorithms that learn the model components of reduced-noise, additive model representations. Consequently, the automated query processing algorithms should try to (a) operate directly on the compressed model representations and (b) utilize the fewest number of bits from the additive model representation. Indeed, they should use the minimum number of bits that ensures the query required confidence.
+%
+\item Design and implementation of semiautomated algorithms that further compress the model representations by considering the dependencies (mutual entropy) between the models. The process should be iterative, in the sense that the model administrator provides ideas on dependencies between various models and Plato figures out the effectiveness of these ideas on compression and noise reduction.
+%
+\item Design and implementation of algorithms for the efficient incremental maintenance of the additive representations (i.e., algorithms that update them as additional data emerge). These algorithms will have to trade off between the speed of convergence to an accurate revised model and the amount of computation needed in order to do so.
+%  
+\item Exercise and experiment with Plato on large scale statistical sensor data processing cases, such as the ones presented by the Energy Dashboard and the DELPHI project. The experimentation will measure the time to develop analyses as well as the runtime efficiency of the analyses.
+%
+\end{enumerate}
+
+
+\end{document}

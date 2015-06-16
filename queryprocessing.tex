@@ -1,0 +1,49 @@
+\section{Query Processing}
+\label{sec:query-processing}
+
+In this section, we describe how queries are evaluated. For ease of exposition we use a variant of our running example involving a ModelQL query. However, similar ideas apply to the processing of InfinityQL queries.
+\reminder{How easy is it to extend these ideas to InfinityQL queries?}
+%To ease exposition, we will be using a query that accesses the models through functions. However, the same concepts apply also to queries that access models by considering them as infinite tables as explained in Section~\ref{sec:queries}.  
+
+\begin{example}
+\label{xmpl:correlation}
+Consider a variant of our running example, where the temperature models are created through an FFT (Fast Fourier Transform) algorithm and stored as sets of frequency-amplitude pairs. In this setting, the following query asks for pairs of highly correlated temperature sensors.\\
+
+\exampleverbatim{SELECT sm1.Sensor, sm2.Sensor\\
+FROM sensor\_models AS sm1, sensor\_models AS sm2\\
+WHERE correlation(sm1.Model, sm2.Model) > 0.9}
+\end{example}
+
+To evaluate such a query, \projName\ offers two different query processing methods, depending on the information that is available about the functions involved in the query.\\ 
+
+\textbf{Processing queries by materializing model values on a grid.}
+The baseline approach of processing queries is by materializing the values returned by each model on a spatiotemporal grid. This is similar to the approach proposed by MauveDB \cite{mauvedb-grid}. However, while in MauveDB the analyst has to manually specify the grid granularity, \projName\ automatically infers it, based on the query's desired confidence. \reminder{One MauveDB paper did not follow this approach. We should make sure that we make this distinction when we discuss related work.} \reminder{To YF: Is selection of the appropriate grid granularity a solved problem in signal processing? It sounds very close to the sampling problem: How many samples are enough?
+}
+
+\begin{example}
+The query of Example~\ref{xmpl:correlation} is executed using the grid-based evaluation method as follows:\\
+
+\exampleverbatim{SELECT sm1.Sensor, sm2.Sensor\\
+FROM sensor\_models AS sm1, sensor\_models AS sm2\\
+LET grid\_start = min\_coord(sm1.Model, sm2.Model)\\
+LET grid\_end = max\_coord(sm1.Model, sm2.Model)\\
+WHERE correlation(grid(sm1.Model, grid\_start, grid\_end, 60),
+grid(sm2.Model, grid\_start, grid\_end, 60)) > 0.9}\\
+
+\noindent where the function $\texttt{grid}(f, l, u, s)$ reduces the model $f$ to a discrete model $f_d$ that is only defined on the grid specified by the start $l$, the end $u$ and the step $s$.
+%For every point $t_i = l + is, t_i \leq u$ it is $f_d(t_i) = f(t_i)$.
+\end{example}
+
+%While the grid materialization provides a baseline solution, it misses a large opportunity discussed next.\\
+
+\textbf{Processing queries directly on the model representations.}
+Instead of discretizing models on the grid and subsequently applying the statistical functions, many functions can be evaluated directly on the storage representation of a model, therefore reaping the benefits of compression. For instance, the correlation function in Example~\ref{xmpl:correlation} can be executed faster directly on the frequency representation.%
+
+To enable query processing directly on the storage representation of the models, the designer of a learning algorithm has to also provide corresponding implementations of the registered statistical functions. \projName's query processor automatically uses the appropriate implementation (e.g., correlation on the frequency domain), reverting to grid-based evaluation only when no suitable implementation is found.\\
+
+\reminder{Somebody reading this carefully will figure out that this does not scale for functions that have multiple arguments, which in term may be coming from different models}
+
+{\bf Exploiting additive models.} Evaluating the query directly on the model representations also allows the system to exploit the additive structure of the models. Given an additive model, \projName\ can compute the query result by first computing a rough approximation using the most important components and subsequently improving it by taking into account the remaining components. This enables the following three important features: (a) Improved query processing performance for queries with low to medium confidence, (b) Anytime query processing (i.e., answer queries with a strict deadline in an approximate manner) and (c) Online query processing, similar to online aggregation works \cite{onlineaggr}, where a query returns a continuous result of ever increasing accuracy.
+
+%\reminder{Question to Yoav (Priority 1): For the typical model classes (ARMA, Fourier, SVD etc) is there a single and obvious ordering (eg, amplitude in Fourier) that accommodates all typical statistical functions? Or we need to state a problem: Discover the appropriate orders for various functions.}
+%\reminder{Yoav: I am not sure what you mean by ``ordering'' either ingeneral or in the context of the Fourier transform. Do you mean something like the ordering of eigen-vectors in SVD by decreasing eigen-values?}

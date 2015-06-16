@@ -1,0 +1,38 @@
+\section{Model Selection}
+\label{sec:model-selection}
+
+In Section \ref{sec:deterministic-models} we saw how the model administrator
+can create models by employing learning algorithms that have
+been added to \projName. However, this assumes that the model
+administrator has a-priori knowledge of which type of model
+best fits the data to select the corresponding learning algorithm.
+For instance, in our running example this assumes that the administrator
+knew that a Haar model would be a good fit for temperature data.
+Although this assumption may hold in some cases (as the administrator may know that the particular phenomenon exhibits a periodicity that makes it a good candidate for Haar),
+in general, choosing the model that is the best fit for the raw measurements is
+a complex task that typically involves trying out different models
+ and comparing them based on how well they fit the
+measurements.\\
+
+{\bf Loss functions.} The quantification of how well a model fits the data is typically done through {\em loss functions}. A loss function is 
+a function that given as input a set of measurements and a corresponding
+model returns a non-negative real number, representing how well
+the model fits (i.e., predicts) the measurements. A low loss value
+indicates that the measurements {\em validate} the model, while a high loss
+value corresponds to {\em falsifying} the model by the data.
+The absolute value of the loss function is usually not important. It is the relative performance of each model w.r.t. the loss function that is important. Given a set of candidate models, their loss on the same data are compared and the best model (i.e., the model with the lowest loss) is chosen.
+
+As we discussed in Section \ref{sec:compression}, the most commonly used loss function is RMS (root-mean-square-error). RMS is the square root of the sum of the squares of the difference between the predictions provided by the model and the actual outcomes. It is typically used when the model predicts real-valued quantities (e.g., the temperature as in our running example).
+
+It is important to note however that other loss functions can be employed as well. The choice of loss function typically depends on the type of data described by the measurements. For instance, if the measurements are classifications of data into discrete categories, RMS is obviously not a very good metric of how good of a fit a model is w.r.t. those measurements. In this case, one usually employs as the loss function the fraction on mistakes (i.e., misclassifications) made by the model on unseen data.\\
+
+{\bf The space of candidate models.} Given a loss function suitable for the type of measurements at hand and a set of measurements, the model administrator wants to choose the model that best fits the measurements according to the particular loss function. To find such a model, the model administrator has to explore a variety of learning algorithms (potentially with different instantiations of their parameters), as they may lead to models of differing loss. For instance, Wavelets may be a better fit than FFT for a particular dataset (and vice versa).
+%
+\eat{
+\begin{itemize}
+\item \emph{Models produced by different learning algorithms.} Different learning algorithms lead to models of differing loss. For instance, Wavelets may be a better fit than FFT for a particular dataset (and vice versa). To choose the best model (i.e., the one with the least loss), the model administrator has to compare the models produced by  different learning algorithms.
+\item \emph{Models produced by a single learning algorithm.} However, even a single learning algorithm may produce different models. Learning algorithms are usually parameterized algorithms, which yield models of different losses, depending on the value of the parameters. For instance an FFT learning algorithm may accept as parameter the number of frequencies that should be extracted from the input measurements. This number clearly affects the loss of the resulting model. Thus the process of choosing the best model should also involve exploring the different models that can be produced by a single learning algorithm.
+\end{itemize}
+}
+
+Although this process is currently done manually, \projName\ has the potential of semi-automating it. In particular, if the space of candidate models is finite (which may not be the case, if for instance one has to consider an infinite amount of possible instantiations for the parameters of a learning algorithm), one could instruct \projName\ to automatically explore this space by creating all candidate models, and choosing the one with the lowest loss. We plan to investigate as part of our future work, whether this space of options is finite in practice and if this is the case, devise a language that allows the model administrator to compactly describe the space of candidate models that have to be explored.

@@ -1,0 +1,36 @@
+\section{Related Work}
+
+\reminder{Add forward reference to probabilistic DB discussion}
+
+\eat{
+\textbf{Prior work from signal processing and machine learning.}
+Work on adaptive signal processing starts in the 50's with the
+the Wiener filter, followed by the Kalman filter and the Widrow-Hoff
+algorithm~\cite{adaptive_signal_processing}. Enormous progress has
+been made since that time and adaptive signal processing is now
+textbook material~\cite{dsp,adaptive_filter_theory}. Closely related
+is data compression theory and practice~\cite{DBLP:books/mk/Sayood12}.
+Recent work of the database field in this area is summarized in \cite{DBS-004}.
+
+The last decade has seen the rapid development in the area of online
+learning. This is a subarea of machine learning that is based on ideas
+from adaptive signal processing and has made interesting and fruitful
+connection to information theory and game theory. PI-Freund is active
+in this area of research~\cite{prediction_learning_models}.
+}
+
+\textbf{Models as tools for compression.} Statistical models, primarily histograms and wavelets, have been widely used for compression in the database literature (see survey \cite{DBS-004}). However, in contrast to \projName, these works assume the contents of the database to be the ground truth, rather than noisy and incomplete measurements thereof. Thus the query answering algorithms lack a probabilistic aspect. Furthermore, most works do not support arbitrary queries, being instead tuned to specific query patterns  (e.g.,  approximate query result size through the use of histograms).\\
+
+\textbf{Model-based data infrastructure.}
+The idea of using models as part of a general DBMS was first presented in the context of MauveDB \cite{mauvedb-grid, mauvedb-cidr, mauvedb-vldb}. \projName\ extends these ideas in several important directions: First, MauveDB argues that models need to be discretized in the coordinates' grid, before they can be queried. In this work we show that a fully virtual approach, where the model is perceived as a function over the infinite spatiotemporal domain, is both easier for the data analyst and more opportune for the query optimizer. For instance, consider two temporal models represented by their Fourier transform and a query asking for their correlation. It is most efficient to compute this query directly on the frequency domain rather than bring it back to the time domain. Second, while MauveDB showcases some of the challenges that arise in model-based systems and presents solutions for specific models, it does not contain a general framework that would allow one to plug in arbitrary models (which is one of the main goals of Plato). 
+Lastly, other works studied particular point problems related to the use of models to represent sensor data, such as comparing compression ratios or designing indices useful for models \cite{aberer-cloud, aberer-compression}. However, they did not present a general extensible model-based database platform.\\
+
+%Apart from MauveDB, several works studied particular point problems related to the use of models to represent sensor data, such as comparing existing models in terms of compression or designing indices that would be useful for such models \cite{aberer-cloud, aberer-compression}. However, neither of these works described a general extensible database platform that can accomodate and offer extensive query capabilities over a variety of models.
+
+\textbf{Efficient query processing on models.} The idea of evaluating queries directly on the representation of a model without discretizing them first, was presented in the context of FunctionDB \cite{functiondb}. The work showed that for a broad class of polynomial functions, faster processing is achieved by evaluating queries directly on the algebraic representation of the functions. Plato's goal is to provide the platform infrastructure that enables such optimizations for broader classes of statistical models.\\
+
+\textbf{Statistical functions inside DBMSs.} Finally, libraries such as MADLib \cite{madlib} allow statistical functions to be evaluated inside a DBMS. While this solves the problem of moving the data out of the database for processing, it couples model creation with query processing, thus not allowing the use of functions to generate models that are hidden from the analyst and used by the system to process arbitrary queries.
+
+%\textbf{Models as tools for compression.} The database community has extensively researched compression, primarily using histograms and wavelets (see survey \cite{DBS-004}). As is typical in database works, the contents of the database are assumed to be the ground truth, rather than noisy and incomplete measurements of the ground truth. Respectively the query answering algorithms lack a probabilistic aspect. Furthermore, the approximate query processing works have been tuned to few query patterns. E.g., a notable success is the use of histograms in query cost estimators that approximate the expected size of query results. However, there is no query processor architecture work on how to gracefully retreat to reconstruction, when computation directly on the compression is not possible.
+
+\reminder{Add work on (a) signal alignment and (b) sensor networks.}

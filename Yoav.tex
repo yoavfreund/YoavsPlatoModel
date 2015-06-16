@@ -1,0 +1,117 @@
+\section{Motivation (Yoav)}
+The analysis of sensor data has traditionally been the domain of
+signal processing or specialized areas such as image and video
+processing, audio processing, MRI, ultrasound, Seismology and the
+like. In general, most of the focus is on the real-time analysis and
+compression and reconstruction of the signals.
+
+These approaches, while very successful in specialized domain, do not
+scale well to sensor networks that contain a large number of sensors
+of diverse types that collect data over a period of years. In order to
+make it possible to access such data collections efficiently we
+propose to use abstractions and techniques from the field of
+data-bases.
+
+However, existing database systems lack a critical abstraction which
+is the {\em Physical Model}. In general, the data contained in a
+database have a one-to-one mappring to real world objects and events.
+for example a person might have an address, a name and a telephone
+number, all of which are unique entities in the world. On the other
+hand, the meaningful events in a video recoding from a webcam
+positioned over a highway are {\em not} the pixel values. The
+meaningful events might be the number of vehicles in view, the speed
+of vehicles in each lane or license plate numbers of the vehicle.
+The entities in the real world do no relate to any individual pixel or
+even group of pixels. They relate to {\em patterns} that appear across
+different pixels at different times. It is by finding these patterns
+that we can extract useful information from the video.
+
+\section{DataBase Design principles}
+
+{\em Database Normalization} defines a set of operations for
+simplifying a database schema and reducing the physical size of the
+database. From the standpoint of information theory, one can view the
+act of Normalization as a type of data compression. However, while
+database normalization requires strict logical implication between
+attributes, much weaker dependencies between attributes suffices for
+compression.
+
+Suppose we have a relation with four attributes $A,B,C,D$. In the
+un-normalized form we store the relation in a single table with four
+columns. If there are mappings $B \to A$ and $B \to (C,D)$ then we can
+use $B$ as a key and break the table into two smaller tables: one for
+$A,B$ and one for $B,C,D$. 
+
+To view the original table as a probability distribution, consider the
+$A,B,C,D$ to be random variables with respect to some distribution
+over the rows of the table (the uniform distribution is most commonly
+used). We can now consider statistical dependenies between
+attributes. For example the implication conditions described above
+imply the following statistical conditions
+\[
+\left[ B=b \to A=a\right] \Rightarrow \left[ P(A=a | B=b) =1 \right]
+\mbox{ and }
+\left[ B=b \to (C,D)=(c,d) \right] \Rightarrow \left[ P(C=c,D=d | B=b) =1 \right]
+\]
+This gives a sufficient condition for compressibility, but it is far
+from necessary. The value of the common variable $B$ does not have 
+to {\em imply} the value of the other variables in order for
+compression to be possible. It is enough that there is a statistical
+dependence between the variables. In other words, that
+\[
+P(A=a|B=b) \neq P(A=a) \mbox{ and } P(C=c,D=d|B=b) \neq P(C=c,D=d)
+\]
+
+The ultimate measure of the compressibility of a relationship is the
+{\em entropy} of the relation:
+\[
+H(P(A,B,C,D))= - \sum_{(a,b,c,d)} P(A=a,B=b,C=c,D=d) \log_2 P(A=a,B=b,C=c,D=d)
+\]
+According to Shannon's source coding theorem (\cite{}) if a table is
+known to have this distribution over it's rows, then it requires
+$H(P(A,B,C,D))$ bits of storage per row.
+
+Lossy compression TBD
+
+In order to make use of this compression scheme we need to also store
+the {\em model} which is expressed here as $P$. Typically, the models
+will not be expressed as a big table with the probability of each
+possible combination of attributes. Instead, a parametric
+representation of the distribution as a function is typically
+used. Such a representation, if it fits the data well, can greatly
+reduce the storage and computation resources needed.
+
+To be continuted, but give me some feedback!
+
+\section{Incremental update of the model}
+In a typical application we need to learn the model from the sensor
+data that is accumulated over time. For the solution to be practical
+we need to be able to incrementally update the model without
+re-processing all of the historical data.
+
+We consider two scenarios:
+\begin{itemize}
+\item {\bf Fixed distribution}
+This is the classical situation studied in statistics and machine
+learning. For some model families (specifically the exponential
+families) there exists compact representations of history called 
+{\em sufficient statistics}. Sufficient statistics, such as the
+empirical mean and the empirical standard deviation, hold all of the
+information needed to evaluate a distribution model wrt the history. 
+
+At the opposite extreme, with complete generality but potentially
+prohibitive computational demands, sits Bayesian statistics~\cite{}
+and online learning~\cite{Cesa-BianchiLugosi}. Under this approch,
+we keep score of the cumulative loss of each model. This approach
+provides universal guarantees on the regret - the cumulative loss of
+the method is never much worse than the cumulative loss of the best
+model in hind-sight.
+
+There is a lot of recent research on methods that lie between these
+two extremes - using small summaries of history to achieve performance
+that is close to that of the Bayesian methods.
+
+\item {\bf Time-Varying distribution}
+
+
+\end{itemize}

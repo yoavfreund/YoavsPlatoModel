@@ -1,0 +1,36 @@
+\section{Introduction}
+\label{sec:introduction}
+
+\reminder{TOO GENERIC, DELETED: With the downward trend in hardware manufacturing costs, recent years saw a significant increase in the number of sensors embedded in devices and structures. From consumer devices, such as cars, smartphones and fitness trackers - to name just a few - to infrastructure, such as road, electrical, computer and weather networks, most man-made products contain an entire array of sensors}
+Sensors generate ever increasing amounts of spatiotemporal data that have to be stored and analyzed. However, analysis of spatiotemporal sensor data is a labor-intensive process. In simple cases, the analyst copies (a subset of) the sensor measurements out of the data store to custom software (typically statistical signal processing algorithms),  computes an underlying real world model, utilizes the model in various types of analyses, such as predictions, correlations and outlier detection and copies the results back into the database. In such cases, the database is utilized just as a store. In more complex cases, where the sensor analysis is combined with the context provided by the conventional alphanumeric data of the database, the analyst-specified processing pipeline is effectively a manually provided query plan. 
+\reminder{IMO THE WEATHER EXAMPLE IS TOO DANGEROUS BECAUSE ITS MODEL IS TOO APPLICATION-SPECIFIC, THEREFORE PLATFORM DEFYING. For instance, in the case of weather data, custom software uses the measurements taken by weather stations to infer a weather model that predicts the weather conditions in any given location. This model is then used as input to other algorithms performing different types of analyses, such as predictions, correlations etc.
+}\reminder{Agreed. I have also removed the discussion on very domain specific models that we used to have in the description of the learning algorithms (Section \ref{sec:models}).}
+
+ By employing a hardcoded processing pipeline for each different analysis case, the state of the art in sensor data processing thus misses all the productivity and performance-enhancing features introduced by Database Management Systems (DBMSs), such as {\em declarative querying}, {\em automatic query optimization} and {\em independence of the physical layer} (specifying how data are stored and queried) {\em from the logical layer} (describing the view of the data to the analyst).
+
+Though it is clear that a merger of signal processing and databases would be beneficial, conventional DBMSs cannot in their current form accomodate spatiotemporal signal analysis. The reason is a key difference in the founding assumptions of databases and signal processing. In contrast to conventional data found in databases, which have a one-to-one mapping to real world objects, the signal processing community assumes that the data are mere {\em measurements} (samples) of the corresponding physical reality.
+As such, sensor data are by definition (a) inaccurate, containing apart from the signal corresponding to the physical quantity measured also a noise component which is the result of random influences on the sensor and (b) incomplete, being discrete samples of a continuous signal. It is easy to see that conventional query processing fails under either of these properties. Querying noisy data leads to inaccurate results, without even explaining the extent of the inaccuracy. Similarly, even simple query operations, such as the join of two relations cannot be directly applied to incomplete data, since the two relations being joined may contain measurements that were taken at slightly different times and locations and thus do not align in space and/or time.
+
+\projName\ aims to merge a general declarative DBMS (with all the associated advantages) with the signal processing paradigm, by operating on the underlying ground truth instead of the actual measurements. The ground truth in this case is represented by a {\em model}, which is a continuous function in space and/or time describing the quantity of interest (e.g., temperature, velocity, acceleration, air pollutant concentration etc.). Models have been successfully used in the signal processing community but have not yet been incorporated in DBMSs. The proposed \projName\ DBMS introduces models as first-class citizens. This addition not only enables declarative query processing for spatiotemporal sensor data, but also achieves significant compression compared to the storage of the actual measurements, which in turn leads to improved query processing performance. Lastly, using models that separate the signal from the noise leads also to improved accuracy of the query results. %compared to analyses operating directly on the sensor measurements.
+
+In short, \projName\ proves the value of operating on the reality (as described by the models) rather than on its projection (as given by the raw measurements). This separation between the actual reality and the perceived reality is also the reason for the system's name, in an allusion to Plato's Cave allegory\footnote{In Plato's Cave, a few prisoners are bound, since birth, to look at a wall where shadows of real world's objects appear. The prisoners perceive only the 2-dimensional world of the shadows and miss the deeper insights that a comprehension of the full 3-dimensional reality would offer them.
+%Similarly, the sensor measurements that appear in a database are the mere projection of the real world. The insight in the world is captured by physical models (i.e., models that capture the world's physics).
+}.
+%
+Plato proposes the following novelties:
+
+\begin{itemize}
+\item A DBMS architecture for spatiotemporal sensor data, containing a novel infrastructure for the definition of models through reusable learning algorithm modules. The models involve a probabilistic aspect that draws from the foundations of signal processing.
+\item Two query languages - ModelQL and InfinityQL - for declaratively querying models. Each language is suited to analysts of different backgrounds, exposing the models either as black boxes (best suited to statisticians and users of systems such as R) or as infinite relational tables (a good fit for SQL programmers).
+\item A novel hierarchical data store for models, in which the components of a model are stored in a compressed form in order of decreasing importance. This enables:
+\item A novel query processing algorithm operating directly on the models that brings significant gains in performance and accuracy compared to a naive solution operating  on the measurements. The query processing algorithm leverages the hierarchical data store to further cut down query processing time by only utilizing the components of the model required to reach the confidence guarantees required by the user.
+\item Guidelines for inferring \emph{reduced-noise} models; i.e., models that separate the noise from the signal and thus improve on the quality of the original measurements.
+
+\reminder{Is guidelines the right word to use in this context?}
+\end{itemize}
+
+
+
+
+
+
